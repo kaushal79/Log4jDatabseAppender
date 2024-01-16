@@ -24,8 +24,8 @@ public class LogDBConnectionFactory {
     private LogDBConnectionFactory() {
 
         Properties properties = new Properties();
-        properties.setProperty("user", "clearing_chips");
-        properties.setProperty("password", "secret"); // or get properties from some configuration file
+        properties.setProperty("user", "user");
+        properties.setProperty("password", "password"); // or get properties from some configuration file
         DriverManagerConnectionFactory connectionFactory = new DriverManagerConnectionFactory("jdbc:oracle:thin:@localhost:1521:orcl", properties);
 
         PoolingDataSource ds = null;
