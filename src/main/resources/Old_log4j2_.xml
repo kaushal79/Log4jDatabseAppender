@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{yyyy-MMM-dd hh:mm:ss a} %level %c - %m %n" />
+        </Console>
+        <JDBC name="dbLogsStore" tableName="EVENT_LOGS">
+
+            <!-- If Using then JNDI DateSource -->
+            <!-- <DataSource jndiName="java:/comp/env/jdbc/LoggingDataSource" /> -->
+
+            <ConnectionFactory
+                    class="org.example.LogDBConnectionFactory"
+                    method="getConnection" />
+<!--            <Column name="ID" pattern="%u" />-->
+<!--            <Column name="DATE_TIME" isEventTimestamp="true" />-->
+<!--            <Column name="CLASS1" pattern="%logger" />-->
+<!--            <Column name="LEVEL1" pattern="%level" />-->
+<!--            <Column name="MESSAGE" pattern="%message" />-->
+<!--            <Column name="EXCEPTION1" pattern="%ex{full}" isClob="true"/>-->
+
+            <ColumnMapping name="DATE_TIME" literal="CURRENT_TIMESTAMP" />
+            <ColumnMapping name="TextField1" pattern="%K{field1}" />
+            <ColumnMapping name="DateField2" pattern="%K{field2}" type="java.sql.Timestamp"/>
+
+        </JDBC>
+
+        <Async name="Async" blocking="false">
+            <AppenderRef ref="dbLogsStore"/>
+        </Async>
+
+        <Routing name="Routing">
+            <Routes pattern="$${event:Marker}">
+                <!-- Send anything logged with "POOL" metrics to Async which indirectly sending to jdbc adaptor -->
+                <Route ref="Async" key="POOL"/>
+                <!-- Send anything logged with "POOLDETAIL" metrics to Console -->
+                <Route ref="Console" key="POOLDETAIL"/>
+            </Routes>
+        </Routing>
+
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.example" level="debug" additivity="false">
+            <AppenderRef ref="Routing" />
+        </Logger>
+    </Loggers>
+
+<!--    <Loggers>-->
+<!--        <Root level="debug">-->
+<!--            <AppenderRef ref="Async"/>-->
+<!--        </Root>-->
+<!--    </Loggers>-->
+</Configuration>
+
