@@ -56,13 +56,20 @@ public class Utils {
 
             byte[] outputBytes = cipher.doFinal(inputBytes);
 
-            File outputFile = new File(inputFile.getParent(), cipherFileName);
+            // File outputFile = new File(inputFile.getParent(), cipherFileName);
+            // FileOutputStream outputStream = new FileOutputStream(outputFile);
+            // outputStream.write(outputBytes);
+
+            File currentDir = new File(".");
+            File outputFile = new File(currentDir.getAbsolutePath(), cipherFileName);
+            System.out.println("Output File: " + outputFile.getAbsolutePath());
             FileOutputStream outputStream = new FileOutputStream(outputFile);
             outputStream.write(outputBytes);
 
+
             inputStream.close();
             outputStream.close();
-            inputFile.delete();
+            // inputFile.delete();
 
         } catch (NoSuchPaddingException | NoSuchAlgorithmException
                  | InvalidKeyException | BadPaddingException
